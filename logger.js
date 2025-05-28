@@ -1,8 +1,13 @@
-var url = 'https://example.com/log';
+const EventEmitter = require('events');
 
-function log(message) {
-    console.log(message);
+var url = 'https://example.com/log';
+class Logger extends EventEmitter{
+    log(message) {
+        // Simulate logging
+        console.log(message);
+        // Raise an event
+        this.emit('messageLogged', { id: 1, url: 'http://' });
+    }
 }
 
-module.exports.log = log
-module.exports.endPoint = url
+module.exports = Logger
