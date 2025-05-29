@@ -1,9 +1,35 @@
+const startupDebugger = require('debug')('app:startup')
+const dbDebugger = require('debug')('app:db')
+const config = require('config');
+const morgan = require('morgan');
+const helmet = require('helmet');
 const Joi = require('joi');
+const logger = require('./logger');
 const express = require('express');
+
 const app = express();
 
-app.use(express.json()); // Middleware to parse JSON bodies
+app.set('view engine', 'pug')
+app.set('views', './views')
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true}))
+app.use(express.static('public'))
+app.use(helmet());
+
+console.log(`Application Name: ${config.get('name')}`);
+console.log(`Mail Server: ${config.get('mail.host')}`);
+console.log(`Mail password: ${config.get('mail.password')}`);
+
+if (app.get('env') === 'development') {
+    
+    app.use(morgan('dev'));
+    startupDebugger('Morgan enabled...');
+}
+app.use(morgan('tiny'));
+app.use(logger);
+
+dbDebugger('connected to db...');
 const courses = [
     { id: 1, name: 'Course 1' },
     { id: 2, name: 'Course 2' },
@@ -11,7 +37,8 @@ const courses = [
 ]
 
 app.get('/', (req, res) => {
-    res.send('Hello, World from Express!!!!');
+    res.render('index', { title: 'My Express App', message: 'Hello, World!' });
+    //res.send('Hello, World from Express!!!!');
 });
 
 app.get('/api/courses', (req, res) => {
