@@ -1,5 +1,3 @@
-const { get } = require("../express-demo/routes/courses");
-
 console.log('Before');
 
 // callbackFunction = (user) => {
@@ -17,20 +15,35 @@ console.log('Before');
 // });
 
 //Asynchronous JavaScript with Callbacks
-getUser(1, (user) => {
-    getRepositories(user, (repos) => {
-        getCommits(repos[0], (commits) => {
-            //This is callback hell, since we have nested callbacks
-            console.log('Commits:', commits);
-        });
-    }
-    );
-});
+// getUser(1, (user) => {
+//     getRepositories(user, (repos) => {
+//         getCommits(repos[0], (commits) => {
+//             //This is callback hell, since we have nested callbacks
+//             console.log('Commits:', commits);
+//         });
+//     }
+//     );
+// });
 
-//Synchronous JavaScript:
-const user = getUser(1)
-const repos = getRepositories(user)
-const commits = getCommits(repos[0])
+//Follow this pattern to avoid callback hell - Names fucntions to the rescue:
+getUser(1, getRepositories);
+
+
+
+function getRepositories(user) {
+    console.log('User:', user);
+    getRepositories(user, getCommits)
+}
+
+function getCommits(repos) {
+     console.log('Repositories:', repos);
+    getCommits(repos[0], displayCommits)
+}
+
+
+function displayCommits(commits) {
+    console.log('Commits:', commits);
+}
 
 console.log('After');
 
@@ -45,6 +58,14 @@ function getUser(id, callback) {
 function getRepositories(user, callback)  {
     setTimeout(() => {
         console.log(`Getting repositories for user... ${user.name}`);
+        console.log(callback);
         callback(['repo1', 'repo2', 'repo3']);
+    }, 2000);
+}
+
+function getCommits(repo, callback)  {
+    setTimeout(() => {
+        console.log(`Getting commits in repo... ${repo}`);
+        callback(['commit1', 'commit2', 'commit3']);
     }, 2000);
 }
