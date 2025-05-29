@@ -1,14 +1,36 @@
 console.log('Before');
 
-//Follow this pattern to avoid callback hell - using Promises
+//Follow this pattern to avoid callback hell - using Promises based approach
 getUser(1)
     .then(user => getRepositories(user))
     .then(repos => getCommits(repos[0]))
     .then(commits => console.log('Commits: ', commits))
     .catch(err => console.error('Error:', err.message));
 
+console.log('After1');
 
-console.log('After');
+
+// Async and await first version
+// const user = await getUser(1);
+// const repos = await getRepositories(user);
+// const commits = await getCommits(repos[0]);
+// console.log('commits2:', commits);
+
+// Async and await second version
+async function displayCommits() {
+    try {
+        const user = await getUser(1);
+        const repos = await getRepositories(user);
+        const commits = await getCommits(repos[0]);
+        console.log('commits2:', commits);
+    }
+    catch (err) {
+        console.error('Error:', err.message);
+    }
+}
+displayCommits() // or await displayCommits()
+
+console.log('After2');
 
 function getUser(id) {
     return new Promise((resolve, reject) => {
