@@ -3,7 +3,7 @@ const dbDebugger = require('debug')('app:db')
 const config = require('config');
 const morgan = require('morgan');
 const helmet = require('helmet');
-const Joi = require('joi');
+
 const logger = require('./middleware/logger');
 const courses = require('./routes/courses');
 const home = require('./routes/home');
