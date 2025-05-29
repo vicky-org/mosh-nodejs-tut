@@ -1,3 +1,5 @@
+const { get } = require("../express-demo/routes/courses");
+
 console.log('Before');
 
 // callbackFunction = (user) => {
@@ -14,14 +16,21 @@ console.log('Before');
 //     console.log('User:', user);
 // });
 
+//Asynchronous JavaScript with Callbacks
 getUser(1, (user) => {
-    console.log('User:', user);
-
     getRepositories(user, (repos) => {
-        console.log('Repositories:', repos);
+        getCommits(repos[0], (commits) => {
+            //This is callback hell, since we have nested callbacks
+            console.log('Commits:', commits);
+        });
     }
     );
 });
+
+//Synchronous JavaScript:
+const user = getUser(1)
+const repos = getRepositories(user)
+const commits = getCommits(repos[0])
 
 console.log('After');
 
